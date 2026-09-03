@@ -48,20 +48,20 @@ Der automatische Mengenrabatt wird auf die tatsächlich lieferbare Stückzahl an
 
 ### Sticker-Packgrößen
 
-Die Mengen in der Quelle sind Sticker-Stückzahlen. Für die Kalkulation werden sie durch die jeweilige Ausbeute pro A4-Druck geteilt. Dadurch entstehen folgende kaufbaren Druckpakete:
+Die Packgrößen werden genau als die in der Preisquelle angegebenen Sticker-Stückzahlen geführt:
 
-| Format | Sticker je A4-Druck | Druckpakete laut Preisliste |
+| Format | Sticker je A4-Druck | Packgrößen laut Preisliste |
 | --- | ---: | --- |
-| A4 | 1 | 1, 2, 5, 10, 20 |
-| A5 | 2 | 1, 2, 5, 10, 20 |
-| A7 | 8 | 1, 2, 5, 10 |
-| 9,5 × 9,5 cm | 6 | 1, 2, 5, 10 |
-| 6,5 × 6,5 cm | 12 | 1, 2, 5, 10 |
-| 20 × 5 cm | 5 | 1, 2, 5, 10 |
-| 7 × 5 cm | 15 | 1, 2, 5, 10 |
-| 10 × 3 cm | 18 | 1, 2, 5, 10 |
+| A4 | 1 | 1, 2, 5, 10, 20 Stück |
+| A5 | 2 | 2, 4, 10, 20, 40 Stück |
+| A7 | 8 | 8, 16, 40, 80 Stück |
+| 9,5 × 9,5 cm | 6 | 6, 12, 30, 60 Stück |
+| 6,5 × 6,5 cm | 12 | 12, 24, 60, 120 Stück |
+| 20 × 5 cm | 5 | 5, 10, 25, 50 Stück |
+| 7 × 5 cm | 15 | 15, 30, 75, 150 Stück |
+| 10 × 3 cm | 18 | 18, 36, 90, 180 Stück |
 
-Bei einer freien Sondermenge rundet die App auf die nächste aus diesen Paketen lieferbare Stückzahl auf und sucht dafür die günstigste Kombination. Die vollständige Preistabelle und diese Packregeln werden automatisch getestet.
+Bei einer freien Sondermenge rundet die App auf die nächste aus diesen Original-Packs lieferbare Stückzahl auf und sucht dafür die günstigste Kombination. Die Umrechnung in benötigte A4-Drucke geschieht nur intern. Die vollständige Preistabelle und diese Packregeln werden automatisch getestet.
 
 ## Enthaltene Quellen
 

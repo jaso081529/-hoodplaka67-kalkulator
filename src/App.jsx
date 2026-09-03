@@ -44,7 +44,6 @@ export default function App() {
   const [manualPrice, setManualPrice] = useState('')
   const [laminate, setLaminate] = useState(false)
   const [extraCut, setExtraCut] = useState(false)
-  const [finishSize, setFinishSize] = useState('XL')
   const [comparison, setComparison] = useState(() => {
     try { return JSON.parse(localStorage.getItem('hp67-comparison')) || [] } catch { return [] }
   })
@@ -55,6 +54,7 @@ export default function App() {
   const retailProduct = retailPool.find((item) => item.id === retailProductId) || retailPool[0]
   const retailVariant = retailProduct?.variants.find((item) => item.id === retailVariantId) || retailProduct?.variants[0]
   const isSticker = category === 'stickers'
+  const sheetLabel = stickerFormat.sheetLabel || 'A4'
 
   useEffect(() => { localStorage.setItem('hp67-comparison', JSON.stringify(comparison)) }, [comparison])
   useEffect(() => {
@@ -71,16 +71,16 @@ export default function App() {
     : isSticker ? stickerFormat.tiers[materialId] : [], [isSticker, quantityMode, stickerFormat, materialId])
   const requestedPackAmount = quantityMode === 'prints' ? printCount : quantity
   const packResult = useMemo(() => isSticker ? optimizePacks(requestedPackAmount, packTiers) : null, [isSticker, requestedPackAmount, packTiers])
+  const calculatedQuantity = isSticker
+    ? packResult.supplied * (quantityMode === 'prints' ? stickerFormat.perPrint : 1)
+    : Math.max(1, Number(quantity) || 1)
   const addons = isSticker
-    ? (laminate ? finishSurcharges.laminate[finishSize] : 0) + (extraCut ? finishSurcharges.extraCut[finishSize] : 0)
+    ? calculatedQuantity * ((laminate ? finishSurcharges.laminate.perSticker : 0) + (extraCut ? finishSurcharges.extraCut.perSticker : 0))
     : 0
   const sourceKind = isSticker ? 'ek' : 'vk'
   const sourcePrice = manualPrice !== ''
     ? Math.max(0, Number(manualPrice) || 0)
     : isSticker ? packResult.price + addons : (retailVariant?.price || 0) * Math.max(1, Number(quantity) || 1)
-  const calculatedQuantity = isSticker
-    ? packResult.supplied * (quantityMode === 'prints' ? stickerFormat.perPrint : 1)
-    : Math.max(1, Number(quantity) || 1)
   const requestedPieces = isSticker
     ? (quantityMode === 'prints' ? Number(printCount) * stickerFormat.perPrint : Number(quantity))
     : Number(quantity)
@@ -96,7 +96,6 @@ export default function App() {
   function chooseFormat(nextId) {
     const next = stickerFormats.find((item) => item.id === nextId)
     setFormatId(nextId)
-    setFinishSize(next.finishSize)
     setPrintCount(1)
     setQuantity(next.perPrint)
     setManualPrice('')
@@ -169,25 +168,24 @@ export default function App() {
                 </Field>
                 <Field label="Kalkulation nach">
                   <div className="segmented">
-                    <button type="button" className={quantityMode === 'prints' ? 'active' : ''} onClick={() => setQuantityMode('prints')}>Drucke / A4-Bögen</button>
+                    <button type="button" className={quantityMode === 'prints' ? 'active' : ''} onClick={() => setQuantityMode('prints')}>Drucke / Bögen</button>
                     <button type="button" className={quantityMode === 'pieces' ? 'active' : ''} onClick={() => setQuantityMode('pieces')}>Eigene Stückzahl</button>
                   </div>
                 </Field>
                 <div className="two-cols">
                   {quantityMode === 'prints'
-                    ? <NumberField label="Anzahl Drucke" value={printCount} onChange={(value) => { setPrintCount(Math.min(10000, Math.max(1, Number(value) || 1))); setManualPrice('') }} min={1} max={10000} suffix="A4" />
+                    ? <NumberField label="Anzahl Drucke" value={printCount} onChange={(value) => { setPrintCount(Math.min(10000, Math.max(1, Number(value) || 1))); setManualPrice('') }} min={1} max={10000} suffix={sheetLabel} />
                     : <NumberField label="Eigene Stückzahl" value={quantity} onChange={(value) => { setQuantity(Math.min(10000, Math.max(1, Number(value) || 1))); setManualPrice('') }} min={1} max={10000} suffix="Stk." />}
-                  <div className="yield-card"><span>ERGEBNIS AUS DRUCK</span><strong>{calculatedQuantity} Sticker</strong><small>{quantityMode === 'prints' ? `${printCount} × A4 · ${stickerFormat.perPrint} pro Druck` : `${packResult.supplied} Stück lieferbar`}</small></div>
+                  <div className="yield-card"><span>ERGEBNIS AUS DRUCK</span><strong>{calculatedQuantity} Sticker</strong><small>{quantityMode === 'prints' ? `${printCount} × ${sheetLabel} · ${stickerFormat.perPrint} pro Druck` : `${packResult.supplied} Stück lieferbar`}</small></div>
                 </div>
                 {calculatedQuantity !== requestedPieces && <div className="notice"><strong>Automatisch angepasst:</strong> Für {requestedPieces} gewünschte Sticker werden {calculatedQuantity} lieferbare Sticker kalkuliert.</div>}
                 <div className="pack-line"><span>Druckplan</span><strong>{packResult.packs.map((pack) => `${pack.count}× ${quantityMode === 'prints' ? `${pack.quantity} Druck${pack.quantity === 1 ? '' : 'e'}` : `${pack.quantity} Stk.`}`).join(' + ')}</strong></div>
                 <div className="pack-line source-packs"><span>Packgrößen laut Liste</span><strong>{stickerFormat.tiers[materialId].map(([pieces]) => pieces).join(' · ')} Stück</strong></div>
                 <details className="extras">
                   <summary>Schutz & Schnitt <small>optional</small></summary>
-                  <p><strong>Laminat</strong> ist eine zusätzliche Schutzschicht. <strong>Extra-Schnitt</strong> deckt zusätzlichen Schneideaufwand ab. Beides stammt als Aufpreis aus deiner Preisliste.</p>
+                  <p><strong>Laminieren +0,10 € pro Sticker</strong> · <strong>Extra-Schnitt +0,06 € pro Sticker</strong>. Die Zusatzkosten werden automatisch mit der tatsächlich kalkulierten Stückzahl multipliziert.</p>
                   <div className="extras-grid">
-                    <Field label="Aufpreisgröße"><select value={finishSize} onChange={(event) => setFinishSize(event.target.value)}>{['S', 'M', 'L', 'XL'].map((size) => <option key={size}>{size}</option>)}</select></Field>
-                    <div className="toggle-row"><button type="button" className={laminate ? 'mini-toggle on' : 'mini-toggle'} onClick={() => setLaminate(!laminate)} aria-pressed={laminate}>Laminat <small>+{fmt(finishSurcharges.laminate[finishSize])}</small></button><button type="button" className={extraCut ? 'mini-toggle on' : 'mini-toggle'} onClick={() => setExtraCut(!extraCut)} aria-pressed={extraCut}>Extra-Schnitt <small>+{fmt(finishSurcharges.extraCut[finishSize])}</small></button></div>
+                    <div className="toggle-row"><button type="button" className={laminate ? 'mini-toggle on' : 'mini-toggle'} onClick={() => setLaminate(!laminate)} aria-pressed={laminate}>Laminieren <small>+{fmt(finishSurcharges.laminate.perSticker)} / Sticker</small></button><button type="button" className={extraCut ? 'mini-toggle on' : 'mini-toggle'} onClick={() => setExtraCut(!extraCut)} aria-pressed={extraCut}>Extra-Schnitt <small>+{fmt(finishSurcharges.extraCut.perSticker)} / Sticker</small></button></div>
                   </div>
                 </details>
               </div>

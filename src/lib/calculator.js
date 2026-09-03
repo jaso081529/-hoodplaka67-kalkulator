@@ -9,9 +9,14 @@ export function getQuantityDiscount(quantity, tiers) {
 
 export function optimizePacks(requested, tiers) {
   const wanted = Math.min(10000, Math.max(1, Math.floor(Number(requested) || 1)))
-  const maxPack = Math.max(...tiers.map(([quantity]) => quantity))
-  // The requested quantity is capped, but the smallest deliverable pack total
-  // may legitimately exceed it (for example 9,999 requested -> 10,005 supplied).
+  // In der Bogenansicht können einzelne Sonderpacks (z. B. 100 Stück bei
+  // 9,5 × 9,5 cm) keinem ganzen Druckbogen entsprechen. Solche Bruchteile
+  // werden nur in der Bogenansicht ignoriert; in der Stückansicht bleiben
+  // alle Original-Packgrößen vollständig verfügbar.
+  const normalizedTiers = tiers.filter(([quantity, price]) => Number.isInteger(quantity) && quantity > 0 && Number(price) >= 0)
+  if (normalizedTiers.length === 0) return { requested: wanted, supplied: 0, price: 0, packs: [] }
+
+  const maxPack = Math.max(...normalizedTiers.map(([quantity]) => quantity))
   const limit = wanted + maxPack
   const costs = Array(limit + 1).fill(Infinity)
   const packCounts = Array(limit + 1).fill(Infinity)
@@ -20,7 +25,7 @@ export function optimizePacks(requested, tiers) {
   packCounts[0] = 0
 
   for (let quantity = 1; quantity <= limit; quantity += 1) {
-    for (const [packQuantity, packPrice] of tiers) {
+    for (const [packQuantity, packPrice] of normalizedTiers) {
       const candidateCost = quantity >= packQuantity ? costs[quantity - packQuantity] + packPrice : Infinity
       const candidateCount = quantity >= packQuantity ? packCounts[quantity - packQuantity] + 1 : Infinity
       if (candidateCost < costs[quantity] || (candidateCost === costs[quantity] && candidateCount < packCounts[quantity])) {

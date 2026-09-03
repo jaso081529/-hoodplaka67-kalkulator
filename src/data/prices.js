@@ -5,6 +5,19 @@ export const PRICE_META = {
   taxNote: 'Quellpreise werden unverändert als Bruttowerte behandelt.',
 }
 
+// Automatischer Kundenrabatt anhand der tatsächlich lieferbaren Stückzahl.
+// Die Stufen sind bewusst zentral abgelegt und können hier leicht angepasst werden.
+export const quantityDiscountTiers = [
+  { min: 1, percent: 0 },
+  { min: 10, percent: 3 },
+  { min: 25, percent: 5 },
+  { min: 50, percent: 8 },
+  { min: 100, percent: 12 },
+  { min: 250, percent: 15 },
+  { min: 500, percent: 18 },
+  { min: 1000, percent: 20 },
+]
+
 const materials = {
   glossy: 'Glänzend',
   transparent: 'Transparent',
@@ -150,4 +163,3 @@ export const categoryOptions = [
   { id: 'textiles', label: 'Textilien', hint: 'VK-Preisliste' },
   { id: 'accessories', label: 'Accessoires', hint: 'VK-Preisliste' },
 ]
-

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
-import { categoryOptions, finishSurcharges, materialOptions, PRICE_META, retailProducts, stickerFormats } from './data/prices.js'
-import { calculateQuote, optimizePacks } from './lib/calculator.js'
+import { categoryOptions, finishSurcharges, materialOptions, PRICE_META, quantityDiscountTiers, retailProducts, stickerFormats } from './data/prices.js'
+import { calculateQuote, getQuantityDiscount, optimizePacks } from './lib/calculator.js'
 
 const euro = new Intl.NumberFormat('de-DE', { style: 'currency', currency: 'EUR' })
 const fmt = (value) => euro.format(Number(value) || 0)
@@ -36,6 +36,7 @@ export default function App() {
   const [retailVariantId, setRetailVariantId] = useState('rot-front')
   const [markup, setMarkup] = useState(100)
   const [discount, setDiscount] = useState(0)
+  const [quantityDiscountEnabled, setQuantityDiscountEnabled] = useState(true)
   const [friendEnabled, setFriendEnabled] = useState(false)
   const [friendDiscount, setFriendDiscount] = useState(15)
   const [additionalCosts, setAdditionalCosts] = useState(0)
@@ -83,7 +84,9 @@ export default function App() {
   const requestedPieces = isSticker
     ? (quantityMode === 'prints' ? Number(printCount) * stickerFormat.perPrint : Number(quantity))
     : Number(quantity)
-  const quote = calculateQuote({ sourceKind, sourceTotal: sourcePrice, quantity: calculatedQuantity, markup, discount, friendEnabled, friendDiscount, additionalCosts, rounding })
+  const quantityDiscount = quantityDiscountEnabled ? getQuantityDiscount(calculatedQuantity, quantityDiscountTiers) : 0
+  const nextQuantityTier = quantityDiscountTiers.find((tier) => tier.min > calculatedQuantity)
+  const quote = calculateQuote({ sourceKind, sourceTotal: sourcePrice, quantity: calculatedQuantity, markup, quantityDiscount, discount, friendEnabled, friendDiscount, additionalCosts, rounding })
 
   const title = isSticker
     ? `Aufkleber · ${stickerFormat.label} · ${materialOptions.find((item) => item.id === materialId)?.label}`
@@ -116,7 +119,7 @@ export default function App() {
   function addComparison() {
     setComparison((current) => [{
       id: uid(), title, quantity: calculatedQuantity, requested: requestedPieces, sourceKind, source,
-      settings: `${markup}% Aufschlag${discount ? ` · ${discount}% Rabatt` : ''}${friendEnabled ? ` · ${friendDiscount}% Freundschaft` : ''}${additionalCosts ? ` · ${fmt(additionalCosts)} Nebenkosten` : ''}`,
+      settings: `${markup}% Aufschlag${quantityDiscount ? ` · ${quantityDiscount}% Mengenrabatt` : ''}${discount ? ` · ${discount}% Zusatzrabatt` : ''}${friendEnabled ? ` · ${friendDiscount}% Freundschaft` : ''}${additionalCosts ? ` · ${fmt(additionalCosts)} Nebenkosten` : ''}`,
       ...quote,
     }, ...current].slice(0, 8))
     setToast('Variante zum Vergleich hinzugefügt')
@@ -126,7 +129,7 @@ export default function App() {
   async function copyQuote() {
     const lines = [
       'HP67 KALKULATION', title, `Menge: ${calculatedQuantity}`, `EK / Ziel-EK: ${fmt(quote.ek)}`,
-      `VK: ${fmt(quote.vk)}`, `Stückpreis: ${fmt(quote.unitPrice)}`, `Gewinn: ${fmt(quote.profit)}`,
+      `VK: ${fmt(quote.vk)}`, `Stückpreis: ${fmt(quote.unitPrice)}`, `Mengenrabatt: ${quantityDiscount}%`, `Gewinn: ${fmt(quote.profit)}`,
       `Marge: ${quote.margin.toFixed(1)} %`, `Quelle: ${source}`,
     ]
     await navigator.clipboard.writeText(lines.join('\n'))
@@ -167,13 +170,13 @@ export default function App() {
                 <Field label="Kalkulation nach">
                   <div className="segmented">
                     <button type="button" className={quantityMode === 'prints' ? 'active' : ''} onClick={() => setQuantityMode('prints')}>Drucke / A4-Bögen</button>
-                    <button type="button" className={quantityMode === 'pieces' ? 'active' : ''} onClick={() => setQuantityMode('pieces')}>Sonderstückzahl</button>
+                    <button type="button" className={quantityMode === 'pieces' ? 'active' : ''} onClick={() => setQuantityMode('pieces')}>Eigene Stückzahl</button>
                   </div>
                 </Field>
                 <div className="two-cols">
                   {quantityMode === 'prints'
                     ? <NumberField label="Anzahl Drucke" value={printCount} onChange={(value) => { setPrintCount(Math.min(10000, Math.max(1, Number(value) || 1))); setManualPrice('') }} min={1} max={10000} suffix="A4" />
-                    : <NumberField label="Gewünschte Stückzahl" value={quantity} onChange={(value) => { setQuantity(Math.min(10000, Math.max(1, Number(value) || 1))); setManualPrice('') }} min={1} max={10000} suffix="Stk." />}
+                    : <NumberField label="Eigene Stückzahl" value={quantity} onChange={(value) => { setQuantity(Math.min(10000, Math.max(1, Number(value) || 1))); setManualPrice('') }} min={1} max={10000} suffix="Stk." />}
                   <div className="yield-card"><span>ERGEBNIS AUS DRUCK</span><strong>{calculatedQuantity} Sticker</strong><small>{quantityMode === 'prints' ? `${printCount} × A4 · ${stickerFormat.perPrint} pro Druck` : `${packResult.supplied} Stück lieferbar`}</small></div>
                 </div>
                 {calculatedQuantity !== requestedPieces && <div className="notice"><strong>Automatisch angepasst:</strong> Für {requestedPieces} gewünschte Sticker werden {calculatedQuantity} lieferbare Sticker kalkuliert.</div>}
@@ -201,7 +204,13 @@ export default function App() {
             <div className="panel-heading compact"><span>02</span><div><h2>Konditionen</h2><p>Deine Kalkulation, flexibel angepasst.</p></div></div>
             <div className="settings-grid">
               <NumberField label={isSticker ? 'Aufschlag' : 'Ziel-Aufschlag'} value={markup} onChange={setMarkup} min={-99} step={1} suffix="%" />
-              <NumberField label="Rabatt" value={discount} onChange={setDiscount} min={0} max={100} step={1} suffix="%" />
+              <NumberField label="Zusatzrabatt" value={discount} onChange={setDiscount} min={0} max={100} step={1} suffix="%" />
+              <Field label="Automatischer Mengenrabatt">
+                <div className="bulk-control">
+                  <button type="button" className={quantityDiscountEnabled ? 'switch on' : 'switch'} onClick={() => setQuantityDiscountEnabled(!quantityDiscountEnabled)} aria-pressed={quantityDiscountEnabled}><i /></button>
+                  <div><strong>{quantityDiscount}% aktiv</strong><small>{quantityDiscountEnabled ? nextQuantityTier ? `Ab ${nextQuantityTier.min} Stück: ${nextQuantityTier.percent}%` : 'Höchste Rabattstufe erreicht' : 'Automatik ausgeschaltet'}</small></div>
+                </div>
+              </Field>
               <NumberField label="Nebenkosten je Auftrag" value={additionalCosts} onChange={setAdditionalCosts} min={0} step={0.5} suffix="€" />
               <Field label="Verkaufspreis runden"><select value={rounding} onChange={(event) => setRounding(event.target.value)}><option value="none">Nicht runden</option><option value="half">Auf nächste 0,50 €</option><option value="ninety">Auf nächsten x,90 €</option></select></Field>
               <Field label={`Quell-${isSticker ? 'EK' : 'VK'} überschreiben`} hint="Leer = Preis aus zentraler Preisliste"><div className="number-wrap"><input type="number" min="0" step="0.01" placeholder={fmt(sourcePrice)} value={manualPrice} onChange={(event) => setManualPrice(event.target.value)} /><span>€</span></div></Field>
@@ -220,7 +229,7 @@ export default function App() {
               <Metric label={isSticker ? 'Einkauf' : 'Ziel-EK'} value={fmt(quote.ek)} sub={sourceKind === 'vk' ? 'rückwärts kalkuliert' : 'Quellpreis + Extras'} />
               <Metric label="Gewinn" value={fmt(quote.profit)} tone={quote.profit < 0 ? 'negative' : 'positive'} sub={`${quote.margin.toFixed(1)} % Marge`} />
               <Metric label="Listen-VK" value={fmt(quote.listVk)} />
-              <Metric label="Nachlass" value={`− ${fmt(quote.totalDiscount)}`} />
+              <Metric label="Nachlass gesamt" value={`− ${fmt(quote.totalDiscount)}`} sub={quantityDiscount ? `${quantityDiscount}% Mengenrabatt enthalten` : 'kein Mengenrabatt'} />
             </div>
             <div className="source-box"><span>PREISQUELLE</span><strong>{source}</strong><small>{manualPrice !== '' ? 'Manuell überschrieben' : 'Originalwert verwendet'} · Stand {new Date(PRICE_META.updated).toLocaleDateString('de-DE')}</small></div>
             <div className="result-actions"><button className="primary" onClick={addComparison}>+ Zum Vergleich</button><button className="secondary" onClick={copyQuote}>Kopieren</button></div>

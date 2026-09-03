@@ -1,5 +1,16 @@
 import { describe, expect, it } from 'vitest'
-import { calculateQuote, optimizePacks } from './calculator.js'
+import { calculateQuote, getQuantityDiscount, optimizePacks } from './calculator.js'
+
+describe('getQuantityDiscount', () => {
+  const tiers = [{ min: 1, percent: 0 }, { min: 10, percent: 3 }, { min: 25, percent: 5 }, { min: 50, percent: 8 }]
+
+  it('selects the highest reached quantity tier', () => {
+    expect(getQuantityDiscount(9, tiers)).toBe(0)
+    expect(getQuantityDiscount(10, tiers)).toBe(3)
+    expect(getQuantityDiscount(49, tiers)).toBe(5)
+    expect(getQuantityDiscount(250, tiers)).toBe(8)
+  })
+})
 
 describe('optimizePacks', () => {
   it('uses the cheapest available combination', () => {
@@ -40,6 +51,13 @@ describe('calculateQuote', () => {
     expect(quote.listVk).toBe(20)
     expect(quote.vk).toBe(16.2)
     expect(quote.profit).toBe(6.2)
+  })
+
+  it('applies quantity, manual and friendship discounts one after another', () => {
+    const quote = calculateQuote({ sourceKind: 'ek', sourceTotal: 50, quantity: 25, markup: 100, quantityDiscount: 5, discount: 10, friendEnabled: true, friendDiscount: 10 })
+    expect(quote.listVk).toBe(100)
+    expect(quote.vk).toBe(76.95)
+    expect(quote.totalDiscount).toBe(23.05)
   })
 
   it('calculates the target EK backwards from a VK source', () => {

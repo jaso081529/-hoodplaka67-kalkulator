@@ -110,6 +110,10 @@ select:focus, input:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba
 .extras-grid { display: grid; grid-template-columns: .55fr 1.45fr; gap: 14px; border-top: 1px solid #2b2b30; padding: 14px; }
 .divider { height: 1px; background: var(--line); margin: 35px -34px 28px; }
 .friend-control { display: flex; align-items: center; gap: 12px; }
+.bulk-control { min-height: 43px; display: flex; align-items: center; gap: 12px; }
+.bulk-control > div { display: flex; flex-direction: column; gap: 3px; }
+.bulk-control strong { font-size: 12px; color: #f2f2f0; }
+.bulk-control small { font-size: 9px; color: #77777e; }
 .switch { border: 0; width: 45px; height: 25px; padding: 3px; border-radius: 999px; background: #303035; flex: 0 0 auto; }
 .switch i { display: block; width: 19px; height: 19px; background: #aaa; border-radius: 50%; transition: .2s; }
 .switch.on { background: var(--red); }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { finishSurcharges, retailProducts, stickerFormats } from './prices.js'
+import { finishSurcharges, quantityDiscountTiers, retailProducts, stickerFormats } from './prices.js'
 
 const expectedStickerData = {
   a4: {
@@ -99,6 +99,19 @@ const expectedRetailPrices = {
 }
 
 describe('price source integrity', () => {
+  it('keeps the automatic customer discount schedule stable', () => {
+    expect(quantityDiscountTiers).toEqual([
+      { min: 1, percent: 0 },
+      { min: 10, percent: 3 },
+      { min: 25, percent: 5 },
+      { min: 50, percent: 8 },
+      { min: 100, percent: 12 },
+      { min: 250, percent: 15 },
+      { min: 500, percent: 18 },
+      { min: 1000, percent: 20 },
+    ])
+  })
+
   it('contains every sticker quantity and price exactly as supplied', () => {
     expect(stickerFormats.map(({ id }) => id)).toEqual(Object.keys(expectedStickerData))
 

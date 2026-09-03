@@ -7,6 +7,8 @@ Responsive Web-App für die interne Preis- und Angebotskalkulation von HoodPlaka
 - Produkt- und Kategorieauswahl für Aufkleber, Textilien und Accessoires
 - Kalkulation nach Anzahl der A4-Drucke; die Sticker-Ausbeute je Format wird automatisch ermittelt
 - Optionale Sonderstückzahlen bis 10.000 Stück mit automatischer Suche nach der günstigsten lieferbaren Pack-Kombination
+- Frei eingebbare Stückzahl für alle Produkte
+- Automatischer, abschaltbarer Mengenrabatt von 3 bis 20 Prozent bei größeren Bestellungen
 - Verständlich erklärte, einklappbare Aufpreise für Laminat und Extra-Schnitt
 - EK-/VK-Kalkulation, Stückpreis, Gewinn und Marge
 - Frei einstellbarer Aufschlag, Rabatt und Freundschaftspreis
@@ -26,8 +28,23 @@ Die fotografierten Textil- und Zubehörlisten werden als **VK-Basis** behandelt.
 Rabatte werden nacheinander angewendet:
 
 ```text
-VK nach Rabatt = Listen-VK × (1 − Rabatt) × (1 − Freundschaftsrabatt)
+VK nach Rabatt = Listen-VK × (1 − Mengenrabatt) × (1 − Zusatzrabatt) × (1 − Freundschaftsrabatt)
 ```
+
+### Automatische Mengenrabatte
+
+| Tatsächlich kalkulierte Menge | Mengenrabatt |
+| ---: | ---: |
+| 1–9 | 0 % |
+| 10–24 | 3 % |
+| 25–49 | 5 % |
+| 50–99 | 8 % |
+| 100–249 | 12 % |
+| 250–499 | 15 % |
+| 500–999 | 18 % |
+| ab 1.000 | 20 % |
+
+Der automatische Mengenrabatt wird auf die tatsächlich lieferbare Stückzahl angewendet und kann in der App ausgeschaltet werden. Ein zusätzlicher manueller Rabatt und der Freundschaftspreis bleiben unabhängig davon verfügbar. Die Rabattstufen liegen zentral in `src/data/prices.js`.
 
 ### Sticker-Packgrößen
 

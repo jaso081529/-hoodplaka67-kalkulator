@@ -2,6 +2,11 @@ export function roundMoney(value) {
   return Math.round((Number(value) + Number.EPSILON) * 100) / 100
 }
 
+export function getQuantityDiscount(quantity, tiers) {
+  const amount = Math.max(1, Math.floor(Number(quantity) || 1))
+  return tiers.reduce((active, tier) => amount >= tier.min ? tier.percent : active, 0)
+}
+
 export function optimizePacks(requested, tiers) {
   const wanted = Math.min(10000, Math.max(1, Math.floor(Number(requested) || 1)))
   const maxPack = Math.max(...tiers.map(([quantity]) => quantity))
@@ -44,14 +49,15 @@ export function optimizePacks(requested, tiers) {
   return { requested: wanted, supplied, price: roundMoney(costs[supplied]), packs }
 }
 
-export function calculateQuote({ sourceKind, sourceTotal, quantity, markup, discount, friendEnabled, friendDiscount, additionalCosts = 0, rounding = 'none' }) {
+export function calculateQuote({ sourceKind, sourceTotal, quantity, markup, quantityDiscount = 0, discount, friendEnabled, friendDiscount, additionalCosts = 0, rounding = 'none' }) {
   const amount = Math.max(1, Number(quantity) || 1)
   const cleanSource = Math.max(0, Number(sourceTotal) || 0)
   const cleanMarkup = Math.max(-99, Number(markup) || 0)
+  const cleanQuantityDiscount = Math.max(0, Math.min(100, Number(quantityDiscount) || 0))
   const cleanDiscount = Math.max(0, Math.min(100, Number(discount) || 0))
   const cleanFriend = friendEnabled ? Math.max(0, Math.min(100, Number(friendDiscount) || 0)) : 0
   const cleanAdditionalCosts = Math.max(0, Number(additionalCosts) || 0)
-  const discountFactor = (1 - cleanDiscount / 100) * (1 - cleanFriend / 100)
+  const discountFactor = (1 - cleanQuantityDiscount / 100) * (1 - cleanDiscount / 100) * (1 - cleanFriend / 100)
 
   const ek = sourceKind === 'ek' ? cleanSource + cleanAdditionalCosts : cleanSource / (1 + cleanMarkup / 100) + cleanAdditionalCosts
   const listVk = sourceKind === 'ek' ? ek * (1 + cleanMarkup / 100) : cleanSource

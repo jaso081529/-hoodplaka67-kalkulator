@@ -59,15 +59,17 @@ export function calculateQuote({ sourceKind, sourceTotal, quantity, markup, disc
     : rounding === 'ninety'
       ? Math.ceil(Math.max(0, rawVk - 0.9)) + 0.9
       : rawVk
-  const profit = vk - ek
-  const margin = vk > 0 ? (profit / vk) * 100 : 0
+  const roundedEk = roundMoney(ek)
+  const roundedVk = roundMoney(vk)
+  const roundedProfit = roundMoney(roundedVk - roundedEk)
+  const margin = roundedVk > 0 ? (roundedProfit / roundedVk) * 100 : 0
 
   return {
-    ek: roundMoney(ek),
+    ek: roundedEk,
     listVk: roundMoney(listVk),
-    vk: roundMoney(vk),
-    unitPrice: roundMoney(vk / amount),
-    profit: roundMoney(profit),
+    vk: roundedVk,
+    unitPrice: roundMoney(roundedVk / amount),
+    profit: roundedProfit,
     margin: roundMoney(margin),
     totalDiscount: roundMoney(Math.max(0, listVk - rawVk)),
   }

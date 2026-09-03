@@ -18,6 +18,12 @@ describe('optimizePacks', () => {
     const result = optimizePacks(5, [[1, 1.9], [2, 3.7], [5, 9.3]])
     expect(result.packs).toEqual([{ quantity: 5, price: 9.3, count: 1 }])
   })
+
+  it('finds the cheapest deliverable amount for an A7 special quantity', () => {
+    const result = optimizePacks(17, [[8, 3.3], [16, 5.2], [40, 12.4], [80, 19.4]])
+    expect(result.supplied).toBe(24)
+    expect(result.price).toBe(8.5)
+  })
 })
 
 describe('calculateQuote', () => {
@@ -35,11 +41,31 @@ describe('calculateQuote', () => {
     expect(quote.vk).toBe(50)
   })
 
+  it('keeps displayed EK and profit cent-exact with the displayed VK', () => {
+    const quote = calculateQuote({ sourceKind: 'vk', sourceTotal: 68.97, quantity: 3, markup: 100, discount: 0, friendEnabled: false, friendDiscount: 0 })
+    expect(quote.ek).toBe(34.49)
+    expect(quote.profit).toBe(34.48)
+    expect(quote.ek + quote.profit).toBe(quote.vk)
+  })
+
   it('includes order costs and rounds the final price', () => {
     const quote = calculateQuote({ sourceKind: 'ek', sourceTotal: 10, quantity: 4, markup: 100, discount: 0, friendEnabled: false, friendDiscount: 0, additionalCosts: 2, rounding: 'ninety' })
     expect(quote.ek).toBe(12)
     expect(quote.vk).toBe(24.9)
     expect(quote.profit).toBe(12.9)
+  })
+
+  it('rounds upwards to the next 50-cent price', () => {
+    const quote = calculateQuote({ sourceKind: 'ek', sourceTotal: 10, quantity: 1, markup: 23, discount: 0, friendEnabled: false, friendDiscount: 0, rounding: 'half' })
+    expect(quote.listVk).toBe(12.3)
+    expect(quote.vk).toBe(12.5)
+  })
+
+  it('handles a full discount without an invalid margin', () => {
+    const quote = calculateQuote({ sourceKind: 'ek', sourceTotal: 10, quantity: 1, markup: 100, discount: 100, friendEnabled: false, friendDiscount: 0 })
+    expect(quote.vk).toBe(0)
+    expect(quote.profit).toBe(-10)
+    expect(quote.margin).toBe(0)
   })
 })
 

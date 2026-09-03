@@ -24,6 +24,13 @@ describe('optimizePacks', () => {
     expect(result.supplied).toBe(24)
     expect(result.price).toBe(8.5)
   })
+
+  it('rounds a near-limit order up to a valid pack total', () => {
+    const result = optimizePacks(9999, [[15, 1.7], [30, 2.8], [75, 5.7], [150, 13.4]])
+    expect(result.supplied).toBe(10005)
+    expect(Number.isFinite(result.price)).toBe(true)
+    expect(result.packs.reduce((total, pack) => total + pack.quantity * pack.count, 0)).toBe(10005)
+  })
 })
 
 describe('calculateQuote', () => {
@@ -68,4 +75,3 @@ describe('calculateQuote', () => {
     expect(quote.margin).toBe(0)
   })
 })
-

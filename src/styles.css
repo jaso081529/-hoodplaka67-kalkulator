@@ -98,6 +98,7 @@ select:focus, input:focus { border-color: var(--red); box-shadow: 0 0 0 3px rgba
 .notice strong { color: #e5e5e7; }
 .pack-line { display: flex; justify-content: space-between; font-size: 11px; border-top: 1px dashed #303035; padding-top: 14px; }
 .pack-line span { color: #77777d; text-transform: uppercase; letter-spacing: .08em; }
+.pack-line.source-packs { border-top: 0; padding-top: 8px; }
 .extras { border: 1px solid #303035; border-radius: 6px; background: #0d0d0f; }
 .extras summary { padding: 12px 14px; color: #bcbcc1; font-size: 11px; font-weight: 700; cursor: pointer; list-style: none; }
 .extras summary::-webkit-details-marker { display: none; }
@@ -202,4 +203,3 @@ footer a { color: #9d9da2; text-decoration: none; }
 }
 
 @media (prefers-reduced-motion: reduce) { * { scroll-behavior: auto !important; transition: none !important; } }
-

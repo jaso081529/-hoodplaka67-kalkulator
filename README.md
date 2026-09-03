@@ -29,6 +29,23 @@ Rabatte werden nacheinander angewendet:
 VK nach Rabatt = Listen-VK × (1 − Rabatt) × (1 − Freundschaftsrabatt)
 ```
 
+### Sticker-Packgrößen
+
+Die Mengen in der Quelle sind Sticker-Stückzahlen. Für die Kalkulation werden sie durch die jeweilige Ausbeute pro A4-Druck geteilt. Dadurch entstehen folgende kaufbaren Druckpakete:
+
+| Format | Sticker je A4-Druck | Druckpakete laut Preisliste |
+| --- | ---: | --- |
+| A4 | 1 | 1, 2, 5, 10, 20 |
+| A5 | 2 | 1, 2, 5, 10, 20 |
+| A7 | 8 | 1, 2, 5, 10 |
+| 9,5 × 9,5 cm | 6 | 1, 2, 5, 10 |
+| 6,5 × 6,5 cm | 12 | 1, 2, 5, 10 |
+| 20 × 5 cm | 5 | 1, 2, 5, 10 |
+| 7 × 5 cm | 15 | 1, 2, 5, 10 |
+| 10 × 3 cm | 18 | 1, 2, 5, 10 |
+
+Bei einer freien Sondermenge rundet die App auf die nächste aus diesen Paketen lieferbare Stückzahl auf und sucht dafür die günstigste Kombination. Die vollständige Preistabelle und diese Packregeln werden automatisch getestet.
+
 ## Enthaltene Quellen
 
 - Quelle A: bestätigte Stickerpreise für A4, A5, A7, 9,5 × 9,5 cm, 6,5 × 6,5 cm, 20 × 5 cm, 7 × 5 cm und 10 × 3 cm sowie Veredelungsaufschläge
@@ -66,4 +83,3 @@ React, Vite und Vitest. Es gibt kein Backend; Vergleiche werden ausschließlich 
 Dieses Werkzeug ist für interne Kalkulationen gedacht. Es ersetzt keine steuerliche oder kaufmännische Beratung. Alle Preise und Margen sind vor einem verbindlichen Angebot zu prüfen.
 
 Die App enthält keine Analyse- oder Werbetracker und lädt keine externen Schriftarten. Vergleichsdaten verbleiben ausschließlich im lokalen Browser-Speicher.
-

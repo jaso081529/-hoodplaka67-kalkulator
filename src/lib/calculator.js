@@ -5,7 +5,9 @@ export function roundMoney(value) {
 export function optimizePacks(requested, tiers) {
   const wanted = Math.min(10000, Math.max(1, Math.floor(Number(requested) || 1)))
   const maxPack = Math.max(...tiers.map(([quantity]) => quantity))
-  const limit = Math.min(10000, wanted + maxPack)
+  // The requested quantity is capped, but the smallest deliverable pack total
+  // may legitimately exceed it (for example 9,999 requested -> 10,005 supplied).
+  const limit = wanted + maxPack
   const costs = Array(limit + 1).fill(Infinity)
   const packCounts = Array(limit + 1).fill(Infinity)
   const picks = Array(limit + 1).fill(null)
@@ -74,4 +76,3 @@ export function calculateQuote({ sourceKind, sourceTotal, quantity, markup, disc
     totalDiscount: roundMoney(Math.max(0, listVk - rawVk)),
   }
 }
-

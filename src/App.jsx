@@ -178,6 +178,7 @@ export default function App() {
                 </div>
                 {calculatedQuantity !== requestedPieces && <div className="notice"><strong>Automatisch angepasst:</strong> Für {requestedPieces} gewünschte Sticker werden {calculatedQuantity} lieferbare Sticker kalkuliert.</div>}
                 <div className="pack-line"><span>Druckplan</span><strong>{packResult.packs.map((pack) => `${pack.count}× ${quantityMode === 'prints' ? `${pack.quantity} Druck${pack.quantity === 1 ? '' : 'e'}` : `${pack.quantity} Stk.`}`).join(' + ')}</strong></div>
+                <div className="pack-line source-packs"><span>Preisliste-Packs</span><strong>{stickerFormat.tiers[materialId].map(([pieces]) => pieces / stickerFormat.perPrint).join(' · ')} A4-Drucke</strong></div>
                 <details className="extras">
                   <summary>Schutz & Schnitt <small>optional</small></summary>
                   <p><strong>Laminat</strong> ist eine zusätzliche Schutzschicht. <strong>Extra-Schnitt</strong> deckt zusätzlichen Schneideaufwand ab. Beides stammt als Aufpreis aus deiner Preisliste.</p>
@@ -239,4 +240,3 @@ export default function App() {
     </div>
   )
 }
-

@@ -31,10 +31,9 @@ VK nach Rabatt = Listen-VK × (1 − Rabatt) × (1 − Freundschaftsrabatt)
 
 ## Enthaltene Quellen
 
-- Projektanweisung: bestätigte Stickerpreise für A4, A5, A7, 9,5 × 9,5 cm, 6,5 × 6,5 cm, 20 × 5 cm, 7 × 5 cm und 10 × 3 cm
-- `IMG_0458.png`: Sticker-Preisliste und Veredelungsaufschläge
-- `IMG_3294.jpeg`: T-Shirts, Hoodies, Windbreaker, Anglerhüte und Schlauchschals
-- `IMG_3293.jpeg`: Schlauchschals, Capies, Balaclava, Wanduhr und Umhängetaschen
+- Quelle A: bestätigte Stickerpreise für A4, A5, A7, 9,5 × 9,5 cm, 6,5 × 6,5 cm, 20 × 5 cm, 7 × 5 cm und 10 × 3 cm sowie Veredelungsaufschläge
+- Quelle B: T-Shirts, Hoodies, Windbreaker, Anglerhüte und Schlauchschals
+- Quelle C: Schlauchschals, Capies, Balaclava, Wanduhr und Umhängetaschen
 
 Nicht eindeutig lesbare oder widersprüchliche Zellen wurden nicht als eigenständige Preisoption übernommen. Vor einem verbindlichen Angebot sollten Quellpreise geprüft werden.
 
@@ -65,4 +64,6 @@ React, Vite und Vitest. Es gibt kein Backend; Vergleiche werden ausschließlich 
 ## Rechtlicher Hinweis
 
 Dieses Werkzeug ist für interne Kalkulationen gedacht. Es ersetzt keine steuerliche oder kaufmännische Beratung. Alle Preise und Margen sind vor einem verbindlichen Angebot zu prüfen.
+
+Die App enthält keine Analyse- oder Werbetracker und lädt keine externen Schriftarten. Vergleichsdaten verbleiben ausschließlich im lokalen Browser-Speicher.
 

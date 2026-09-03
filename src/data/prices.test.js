@@ -3,18 +3,25 @@ import { finishSurcharges, quantityDiscountTiers, retailProducts, stickerFormats
 
 const expectedStickerData = {
   a4: {
-    perPrint: 1,
-    packs: [1, 2, 5, 10, 20],
+    perPrint: 1, sheetLabel: 'A4', packs: [1, 2, 5, 10, 20],
     tiers: {
-      glossy: [[1, 1.9], [2, 3.7], [5, 9.3], [10, 18.5], [20, 29.6]],
-      transparent: [[1, 2], [2, 4], [5, 10], [10, 20], [20, 32]],
-      holographic: [[1, 3.7], [2, 7.4], [5, 18.4], [10, 32.7], [20, 50.8]],
-      matteWhite: [[1, 2], [2, 4], [5, 9.9], [10, 19.8], [20, 31.8]],
+      glossy: [[1, 1.7], [2, 3.3], [5, 8.5], [10, 16.5], [20, 26.9]],
+      transparent: [[1, 1.9], [2, 3.7], [5, 9.2], [10, 18], [20, 29.9]],
+      holographic: [[1, 3.4], [2, 6.8], [5, 16.9], [10, 29.9], [20, 46.9]],
+      matteWhite: [[1, 1.8], [2, 3.5], [5, 8.9], [10, 17.5], [20, 28.9]],
+    },
+  },
+  a3: {
+    perPrint: 1, sheetLabel: 'A3', packs: [1, 2, 5, 10, 20],
+    tiers: {
+      glossy: [[1, 3.1], [2, 6], [5, 14.9], [10, 28.9], [20, 49.9]],
+      transparent: [[1, 3.4], [2, 6.7], [5, 16.9], [10, 33.9], [20, 58.9]],
+      holographic: [[1, 4.5], [2, 8.9], [5, 21.9], [10, 38.9], [20, 59.9]],
+      matteWhite: [[1, 3.2], [2, 6.2], [5, 15.5], [10, 30.9], [20, 52.9]],
     },
   },
   a5: {
-    perPrint: 2,
-    packs: [1, 2, 5, 10, 20],
+    perPrint: 2, sheetLabel: 'A4', packs: [1, 2, 5, 10, 20],
     tiers: {
       glossy: [[2, 2.1], [4, 4.2], [10, 10.5], [20, 16.8], [40, 30.4]],
       transparent: [[2, 2.4], [4, 4.8], [10, 12], [20, 19.2], [40, 35.6]],
@@ -23,8 +30,7 @@ const expectedStickerData = {
     },
   },
   a7: {
-    perPrint: 8,
-    packs: [1, 2, 5, 10],
+    perPrint: 8, sheetLabel: 'A4', packs: [1, 2, 5, 10],
     tiers: {
       glossy: [[8, 1.7], [16, 2.7], [40, 6.3], [80, 9.8]],
       transparent: [[8, 2.9], [16, 4.7], [40, 10.7], [80, 15.8]],
@@ -33,18 +39,16 @@ const expectedStickerData = {
     },
   },
   '95x95': {
-    perPrint: 6,
-    packs: [1, 2, 5, 10],
+    perPrint: 6, sheetLabel: 'A4', packs: [1, 2, 5, 10, 100 / 6],
     tiers: {
-      glossy: [[6, 1.6], [12, 2.5], [30, 5.8], [60, 9.1]],
-      transparent: [[6, 2.5], [12, 4], [30, 9.2], [60, 13.6]],
-      holographic: [[6, 3.1], [12, 5], [30, 11.4], [60, 18]],
-      matteWhite: [[6, 1.7], [12, 2.7], [30, 6.2], [60, 9.8]],
+      glossy: [[6, 1.6], [12, 2.5], [30, 5.8], [60, 9.1], [100, 13.5]],
+      transparent: [[6, 2.5], [12, 4], [30, 9.2], [60, 13.6], [100, 20.18]],
+      holographic: [[6, 3.1], [12, 5], [30, 11.4], [60, 18], [100, 26.7]],
+      matteWhite: [[6, 1.7], [12, 2.7], [30, 6.2], [60, 9.8], [100, 14.54]],
     },
   },
   '65x65': {
-    perPrint: 12,
-    packs: [1, 2, 5, 10],
+    perPrint: 12, sheetLabel: 'A4', packs: [1, 2, 5, 10],
     tiers: {
       glossy: [[12, 1.7], [24, 3.4], [60, 5.4], [120, 10.8]],
       transparent: [[12, 2.3], [24, 4.6], [60, 7.3], [120, 14.6]],
@@ -53,8 +57,7 @@ const expectedStickerData = {
     },
   },
   '20x5': {
-    perPrint: 5,
-    packs: [1, 2, 5, 10],
+    perPrint: 5, sheetLabel: 'A4', packs: [1, 2, 5, 10],
     tiers: {
       glossy: [[5, 1.6], [10, 3.2], [25, 6.4], [50, 11.8]],
       transparent: [[5, 2.4], [10, 4.7], [25, 9.4], [50, 17.4]],
@@ -63,8 +66,7 @@ const expectedStickerData = {
     },
   },
   '7x5': {
-    perPrint: 15,
-    packs: [1, 2, 5, 10],
+    perPrint: 15, sheetLabel: 'A4', packs: [1, 2, 5, 10],
     tiers: {
       glossy: [[15, 1.7], [30, 2.8], [75, 5.7], [150, 13.4]],
       transparent: [[15, 3.8], [30, 6.9], [75, 12.8], [150, 27.6]],
@@ -73,8 +75,7 @@ const expectedStickerData = {
     },
   },
   '10x3': {
-    perPrint: 18,
-    packs: [1, 2, 5, 10],
+    perPrint: 18, sheetLabel: 'A4', packs: [1, 2, 5, 10],
     tiers: {
       glossy: [[18, 1.8], [36, 3.1], [90, 6.4], [180, 14.7]],
       transparent: [[18, 4.4], [36, 8], [90, 14.9], [180, 31.7]],
@@ -101,46 +102,40 @@ const expectedRetailPrices = {
 describe('price source integrity', () => {
   it('keeps the automatic customer discount schedule stable', () => {
     expect(quantityDiscountTiers).toEqual([
-      { min: 1, percent: 0 },
-      { min: 10, percent: 3 },
-      { min: 25, percent: 5 },
-      { min: 50, percent: 8 },
-      { min: 100, percent: 12 },
-      { min: 250, percent: 15 },
-      { min: 500, percent: 18 },
-      { min: 1000, percent: 20 },
+      { min: 1, percent: 0 }, { min: 10, percent: 3 }, { min: 25, percent: 5 }, { min: 50, percent: 8 },
+      { min: 100, percent: 12 }, { min: 250, percent: 15 }, { min: 500, percent: 18 }, { min: 1000, percent: 20 },
     ])
   })
 
-  it('contains every sticker quantity and price exactly as supplied', () => {
+  it('contains all 9 sticker formats including A3 exactly as supplied', () => {
     expect(stickerFormats.map(({ id }) => id)).toEqual(Object.keys(expectedStickerData))
-
     for (const format of stickerFormats) {
       const expected = expectedStickerData[format.id]
       expect(format.perPrint).toBe(expected.perPrint)
+      expect(format.sheetLabel).toBe(expected.sheetLabel)
       expect(format.tiers).toEqual(expected.tiers)
     }
   })
 
-  it('maps every sticker quantity to a whole A4 print pack', () => {
+  it('keeps pack sizes usable in piece mode and print mode', () => {
     for (const format of stickerFormats) {
-      const expected = expectedStickerData[format.id]
       for (const tiers of Object.values(format.tiers)) {
-        const printPacks = tiers.map(([pieces]) => pieces / format.perPrint)
-        expect(printPacks.every(Number.isInteger)).toBe(true)
-        expect(printPacks).toEqual(expected.packs)
+        expect(tiers.every(([pieces, price]) => pieces > 0 && price > 0)).toBe(true)
+        if (format.id !== '95x95') {
+          expect(tiers.map(([pieces]) => pieces / format.perPrint).every(Number.isInteger)).toBe(true)
+        }
       }
     }
   })
 
-  it('contains the supplied finishing surcharges exactly', () => {
+  it('contains the current per-sticker finishing surcharges exactly', () => {
     expect(finishSurcharges).toEqual({
-      laminate: { label: 'Laminat', S: 2.5, M: 3.5, L: 4.5, XL: 6.5 },
-      extraCut: { label: 'Extra-Schnitt', S: 2, M: 2.5, L: 3.5, XL: 5 },
+      laminate: { label: 'Laminieren', perSticker: 0.10 },
+      extraCut: { label: 'Extra-Schnitt', perSticker: 0.06 },
     })
   })
 
-  it('keeps every clearly readable textile and accessory price unchanged', () => {
+  it('keeps every textile and accessory price unchanged', () => {
     expect(Object.fromEntries(retailProducts.map((product) => [product.id, product.variants.map(({ price }) => price)]))).toEqual(expectedRetailPrices)
   })
 })

@@ -1,12 +1,11 @@
 export const PRICE_META = {
-  version: '1.0.0',
+  version: '1.1.0',
   updated: '2026-09-03',
   currency: 'EUR',
-  taxNote: 'Quellpreise werden unverändert als Bruttowerte behandelt.',
+  taxNote: 'Alle Preise nach §19 UStG.',
 }
 
 // Automatischer Kundenrabatt anhand der tatsächlich lieferbaren Stückzahl.
-// Die Stufen sind bewusst zentral abgelegt und können hier leicht angepasst werden.
 export const quantityDiscountTiers = [
   { min: 1, percent: 0 },
   { min: 10, percent: 3 },
@@ -19,7 +18,7 @@ export const quantityDiscountTiers = [
 ]
 
 const materials = {
-  glossy: 'Glänzend',
+  glossy: 'Glossy',
   transparent: 'Transparent',
   holographic: 'Holographic',
   matteWhite: 'Weiß Matt',
@@ -27,16 +26,25 @@ const materials = {
 
 export const stickerFormats = [
   {
-    id: 'a4', label: 'A4', perPrint: 1, finishSize: 'XL', source: 'Sticker-Preisliste · Quelle A',
+    id: 'a4', label: 'A4', perPrint: 1, sheetLabel: 'A4', finishSize: 'XL', source: 'Aktuelle HoodPlaka67 Aufkleber-Preisliste',
     tiers: {
-      glossy: [[1, 1.9], [2, 3.7], [5, 9.3], [10, 18.5], [20, 29.6]],
-      transparent: [[1, 2], [2, 4], [5, 10], [10, 20], [20, 32]],
-      holographic: [[1, 3.7], [2, 7.4], [5, 18.4], [10, 32.7], [20, 50.8]],
-      matteWhite: [[1, 2], [2, 4], [5, 9.9], [10, 19.8], [20, 31.8]],
+      glossy: [[1, 1.7], [2, 3.3], [5, 8.5], [10, 16.5], [20, 26.9]],
+      transparent: [[1, 1.9], [2, 3.7], [5, 9.2], [10, 18], [20, 29.9]],
+      holographic: [[1, 3.4], [2, 6.8], [5, 16.9], [10, 29.9], [20, 46.9]],
+      matteWhite: [[1, 1.8], [2, 3.5], [5, 8.9], [10, 17.5], [20, 28.9]],
     },
   },
   {
-    id: 'a5', label: 'A5', perPrint: 2, finishSize: 'L', source: 'Sticker-Preisliste · Quelle A',
+    id: 'a3', label: 'A3 Großformat', perPrint: 1, sheetLabel: 'A3', finishSize: 'XL', source: 'Aktuelle HoodPlaka67 Aufkleber-Preisliste',
+    tiers: {
+      glossy: [[1, 3.1], [2, 6], [5, 14.9], [10, 28.9], [20, 49.9]],
+      transparent: [[1, 3.4], [2, 6.7], [5, 16.9], [10, 33.9], [20, 58.9]],
+      holographic: [[1, 4.5], [2, 8.9], [5, 21.9], [10, 38.9], [20, 59.9]],
+      matteWhite: [[1, 3.2], [2, 6.2], [5, 15.5], [10, 30.9], [20, 52.9]],
+    },
+  },
+  {
+    id: 'a5', label: 'A5', perPrint: 2, sheetLabel: 'A4', finishSize: 'L', source: 'Aktuelle HoodPlaka67 Aufkleber-Preisliste',
     tiers: {
       glossy: [[2, 2.1], [4, 4.2], [10, 10.5], [20, 16.8], [40, 30.4]],
       transparent: [[2, 2.4], [4, 4.8], [10, 12], [20, 19.2], [40, 35.6]],
@@ -45,7 +53,7 @@ export const stickerFormats = [
     },
   },
   {
-    id: 'a7', label: 'A7', perPrint: 8, finishSize: 'M', source: 'Sticker-Preisliste · Quelle A',
+    id: 'a7', label: 'A7', perPrint: 8, sheetLabel: 'A4', finishSize: 'M', source: 'Aktuelle HoodPlaka67 Aufkleber-Preisliste',
     tiers: {
       glossy: [[8, 1.7], [16, 2.7], [40, 6.3], [80, 9.8]],
       transparent: [[8, 2.9], [16, 4.7], [40, 10.7], [80, 15.8]],
@@ -54,16 +62,16 @@ export const stickerFormats = [
     },
   },
   {
-    id: '95x95', label: '9,5 × 9,5 cm', perPrint: 6, finishSize: 'L', source: 'Sticker-Preisliste · Quelle A',
+    id: '95x95', label: '9,5 × 9,5 cm', perPrint: 6, sheetLabel: 'A4', finishSize: 'L', source: 'Aktuelle HoodPlaka67 Aufkleber-Preisliste',
     tiers: {
-      glossy: [[6, 1.6], [12, 2.5], [30, 5.8], [60, 9.1]],
-      transparent: [[6, 2.5], [12, 4], [30, 9.2], [60, 13.6]],
-      holographic: [[6, 3.1], [12, 5], [30, 11.4], [60, 18]],
-      matteWhite: [[6, 1.7], [12, 2.7], [30, 6.2], [60, 9.8]],
+      glossy: [[6, 1.6], [12, 2.5], [30, 5.8], [60, 9.1], [100, 13.5]],
+      transparent: [[6, 2.5], [12, 4], [30, 9.2], [60, 13.6], [100, 20.18]],
+      holographic: [[6, 3.1], [12, 5], [30, 11.4], [60, 18], [100, 26.7]],
+      matteWhite: [[6, 1.7], [12, 2.7], [30, 6.2], [60, 9.8], [100, 14.54]],
     },
   },
   {
-    id: '65x65', label: '6,5 × 6,5 cm', perPrint: 12, finishSize: 'M', source: 'Sticker-Preisliste · Quelle A',
+    id: '65x65', label: '6,5 × 6,5 cm', perPrint: 12, sheetLabel: 'A4', finishSize: 'M', source: 'Aktuelle HoodPlaka67 Aufkleber-Preisliste',
     tiers: {
       glossy: [[12, 1.7], [24, 3.4], [60, 5.4], [120, 10.8]],
       transparent: [[12, 2.3], [24, 4.6], [60, 7.3], [120, 14.6]],
@@ -72,7 +80,7 @@ export const stickerFormats = [
     },
   },
   {
-    id: '20x5', label: '20 × 5 cm', perPrint: 5, finishSize: 'L', source: 'Sticker-Preisliste · Quelle A',
+    id: '20x5', label: '20 × 5 cm', perPrint: 5, sheetLabel: 'A4', finishSize: 'L', source: 'Aktuelle HoodPlaka67 Aufkleber-Preisliste',
     tiers: {
       glossy: [[5, 1.6], [10, 3.2], [25, 6.4], [50, 11.8]],
       transparent: [[5, 2.4], [10, 4.7], [25, 9.4], [50, 17.4]],
@@ -81,7 +89,7 @@ export const stickerFormats = [
     },
   },
   {
-    id: '7x5', label: '7 × 5 cm', perPrint: 15, finishSize: 'S', source: 'Sticker-Preisliste · Quelle A',
+    id: '7x5', label: '7 × 5 cm', perPrint: 15, sheetLabel: 'A4', finishSize: 'S', source: 'Aktuelle HoodPlaka67 Aufkleber-Preisliste',
     tiers: {
       glossy: [[15, 1.7], [30, 2.8], [75, 5.7], [150, 13.4]],
       transparent: [[15, 3.8], [30, 6.9], [75, 12.8], [150, 27.6]],
@@ -90,7 +98,7 @@ export const stickerFormats = [
     },
   },
   {
-    id: '10x3', label: '10 × 3 cm', perPrint: 18, finishSize: 'S', source: 'Sticker-Preisliste · Quelle A',
+    id: '10x3', label: '10 × 3 cm', perPrint: 18, sheetLabel: 'A4', finishSize: 'S', source: 'Aktuelle HoodPlaka67 Aufkleber-Preisliste',
     tiers: {
       glossy: [[18, 1.8], [36, 3.1], [90, 6.4], [180, 14.7]],
       transparent: [[18, 4.4], [36, 8], [90, 14.9], [180, 31.7]],
@@ -103,8 +111,8 @@ export const stickerFormats = [
 export const materialOptions = Object.entries(materials).map(([id, label]) => ({ id, label }))
 
 export const finishSurcharges = {
-  laminate: { label: 'Laminat', S: 2.5, M: 3.5, L: 4.5, XL: 6.5 },
-  extraCut: { label: 'Extra-Schnitt', S: 2, M: 2.5, L: 3.5, XL: 5 },
+  laminate: { label: 'Laminieren', perSticker: 0.10 },
+  extraCut: { label: 'Extra-Schnitt', perSticker: 0.06 },
 }
 
 const colorVariants = (colors, options) => colors.flatMap((color) =>
@@ -159,7 +167,7 @@ export const retailProducts = [
 ]
 
 export const categoryOptions = [
-  { id: 'stickers', label: 'Aufkleber', hint: 'EK-Staffeln' },
+  { id: 'stickers', label: 'Aufkleber', hint: 'aktuelle Packpreise' },
   { id: 'textiles', label: 'Textilien', hint: 'VK-Preisliste' },
   { id: 'accessories', label: 'Accessoires', hint: 'VK-Preisliste' },
 ]
